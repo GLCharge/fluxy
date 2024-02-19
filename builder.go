@@ -104,8 +104,12 @@ func (qb *FluxQueryBuilder) Pivot(rowKey, columnKey string, valueColumn string) 
 	return qb
 }
 
-func (qb *FluxQueryBuilder) Sum() *FluxQueryBuilder {
-	qb.queryParts = append(qb.queryParts, "sum()")
+func (qb *FluxQueryBuilder) Sum(column *string) *FluxQueryBuilder {
+	sumQuery := []string{}
+	if column != nil {
+		sumQuery = append(sumQuery, fmt.Sprintf(`column: "%s"`, *column))
+	}
+	qb.queryParts = append(qb.queryParts, fmt.Sprintf("sum(%s)", strings.Join(sumQuery, ", ")))
 	return qb
 }
 
@@ -137,6 +141,21 @@ func (qb *FluxQueryBuilder) Limit(n int, offset *int) *FluxQueryBuilder {
 	}
 
 	qb.queryParts = append(qb.queryParts, fmt.Sprintf("limit(%s)", strings.Join(limitQuery, ", ")))
+	return qb
+}
+
+func (qb *FluxQueryBuilder) Elapsed(columnName *string, timeColumn *string, unit *string) *FluxQueryBuilder {
+	elapsedQuery := []string{}
+	if columnName != nil {
+		elapsedQuery = append(elapsedQuery, fmt.Sprintf(`columnName: "%s"`, *columnName))
+	}
+	if timeColumn != nil {
+		elapsedQuery = append(elapsedQuery, fmt.Sprintf(`timeColumn: "%s"`, *timeColumn))
+	}
+	if unit != nil {
+		elapsedQuery = append(elapsedQuery, fmt.Sprintf(`unit: %s`, *unit))
+	}
+	qb.queryParts = append(qb.queryParts, fmt.Sprintf("elapsed(%s)", strings.Join(elapsedQuery, ", ")))
 	return qb
 }
 
