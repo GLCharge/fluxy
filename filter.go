@@ -18,6 +18,7 @@ const (
 	Lte FilterOperator = "<="
 
 	And FilterCondition = "and"
+	Not FilterCondition = "not"
 	Or  FilterCondition = "or"
 
 	Start GroupCondition = "start"
@@ -57,6 +58,12 @@ func (fb *FilterBuilder) AddFilter(field, value string) *FilterBuilder {
 // And adds an AND condition to the filter.
 func (fb *FilterBuilder) And() *FilterBuilder {
 	fb.filters = append(fb.filters, Filter{Condition: And})
+	return fb
+}
+
+// Not adds an NOT condition to the filter.
+func (fb *FilterBuilder) Not() *FilterBuilder {
+	fb.filters = append(fb.filters, Filter{Condition: Not})
 	return fb
 }
 
